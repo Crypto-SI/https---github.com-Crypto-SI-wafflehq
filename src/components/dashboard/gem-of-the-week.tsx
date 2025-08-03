@@ -13,9 +13,10 @@ import type { Gem } from '@/types';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { format } from 'date-fns';
 
 const initialGems: Gem[] = [
-    { id: 'gem_1', name: 'WaffleCoin', coingeckoId: 'wafflecoin', currentValue: 214.00, valueWhenAdded: 186.00, valueWhenSold: null, addedBy: 'CryptoSI' },
+    { id: 'gem_1', name: 'WaffleCoin', coingeckoId: 'wafflecoin', currentValue: 214.00, valueWhenAdded: 186.00, valueWhenSold: null, addedBy: 'CryptoSI', dateAdded: new Date() },
 ];
 
 export function GemOfTheWeek() {
@@ -28,6 +29,7 @@ export function GemOfTheWeek() {
       valueWhenAdded: '',
       valueWhenSold: '',
       addedBy: 'CryptoSI' as 'CryptoSI' | 'Financial Navigator',
+      dateAdded: new Date(),
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,10 +50,11 @@ export function GemOfTheWeek() {
         valueWhenAdded: parseFloat(newGem.valueWhenAdded) || 0,
         valueWhenSold: newGem.valueWhenSold ? parseFloat(newGem.valueWhenSold) : null,
         addedBy: newGem.addedBy,
+        dateAdded: new Date(),
     };
     setGems(prev => [...prev, gemToAdd]);
     setIsAddGemOpen(false);
-    setNewGem({ name: '', coingeckoId: '', currentValue: '', valueWhenAdded: '', valueWhenSold: '', addedBy: 'CryptoSI' });
+    setNewGem({ name: '', coingeckoId: '', currentValue: '', valueWhenAdded: '', valueWhenSold: '', addedBy: 'CryptoSI', dateAdded: new Date() });
   };
 
   const calculateChange = (current: number, added: number) => {
@@ -79,6 +82,7 @@ export function GemOfTheWeek() {
                 <TableHead className="w-[180px]">Added By</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Current Value</TableHead>
+                <TableHead>Date Added</TableHead>
                 <TableHead className="hidden sm:table-cell">Added At</TableHead>
                 <TableHead>Change</TableHead>
                 <TableHead className="hidden sm:table-cell">Sold At</TableHead>
@@ -103,6 +107,7 @@ export function GemOfTheWeek() {
                             <div className="text-sm text-muted-foreground">{gem.coingeckoId}</div>
                         </TableCell>
                         <TableCell>${gem.currentValue.toFixed(2)}</TableCell>
+                        <TableCell>{format(gem.dateAdded, 'PP')}</TableCell>
                         <TableCell className="hidden sm:table-cell">${gem.valueWhenAdded.toFixed(2)}</TableCell>
                         <TableCell className={cn(
                             'font-medium',
