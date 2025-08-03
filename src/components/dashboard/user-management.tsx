@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { User } from '@/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -97,6 +97,11 @@ export function UserManagement() {
   const [isEditCreditsOpen, setIsEditCreditsOpen] = useState(false);
   const [creditsToEdit, setCreditsToEdit] = useState<number | string>('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleViewDetails = (user: User) => {
     setSelectedUser(user);
@@ -134,16 +139,18 @@ export function UserManagement() {
             <CardDescription>Manage your community members.</CardDescription>
           </div>
           <div className="flex items-center gap-2">
-            <div className="relative flex items-center">
-              <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search by email or username..."
-                className="pl-8 sm:w-[300px]"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
+            {isClient && (
+              <div className="relative flex items-center">
+                <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search by email or username..."
+                  className="pl-8 sm:w-[300px]"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            )}
             <Button size="sm" onClick={() => setIsInviteOpen(true)}>
               <PlusCircle className="mr-2 h-4 w-4" />
               Invite New Member
