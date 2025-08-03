@@ -98,7 +98,10 @@ export function GemOfTheWeek() {
                 </div>
                 <div className="grid gap-2">
                     <Label htmlFor="coingeckoId">CoinGecko API Name</Label>
-                    <Input id="coingeckoId" name="coingeckoId" value={newGem.coingeckoId} onChange={handleInputChange} placeholder="e.g., wafflecoin" />
+                    <div className="flex items-center gap-2">
+                      <Input id="coingeckoId" name="coingeckoId" value={newGem.coingeckoId} onChange={handleInputChange} placeholder="e.g., wafflecoin" />
+                      <Button>Fetch</Button>
+                    </div>
                 </div>
                 <div className="grid gap-2">
                     <Label htmlFor="currentValue">Current Value ($)</Label>
