@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -133,8 +134,8 @@ export function UserManagement() {
             <CardDescription>Manage your community members.</CardDescription>
           </div>
           <div className="flex items-center gap-2">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <div className="relative flex items-center">
+              <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Search by email or username..."
