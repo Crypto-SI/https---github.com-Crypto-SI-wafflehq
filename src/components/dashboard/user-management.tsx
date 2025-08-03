@@ -20,7 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { MoreHorizontal, PlusCircle, User as UserIcon, Mail, ShieldAlert, XCircle, Pencil } from 'lucide-react';
+import { MoreHorizontal, PlusCircle, User as UserIcon, Mail, ShieldAlert, XCircle, Pencil, Search } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -95,7 +95,7 @@ export function UserManagement() {
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [isEditCreditsOpen, setIsEditCreditsOpen] = useState(false);
   const [creditsToEdit, setCreditsToEdit] = useState<number | string>('');
-
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleViewDetails = (user: User) => {
     setSelectedUser(user);
@@ -119,6 +119,11 @@ export function UserManagement() {
     }
   };
 
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       <Card>
@@ -127,10 +132,22 @@ export function UserManagement() {
             <CardTitle>User Management</CardTitle>
             <CardDescription>Manage your community members.</CardDescription>
           </div>
-          <Button size="sm" onClick={() => setIsInviteOpen(true)}>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Invite New Member
-          </Button>
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search by email or username..."
+                className="pl-8 sm:w-[300px]"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <Button size="sm" onClick={() => setIsInviteOpen(true)}>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Invite New Member
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <Table>
@@ -145,7 +162,7 @@ export function UserManagement() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.map((user) => (
+              {filteredUsers.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>
                     <div className="flex items-center gap-4">
