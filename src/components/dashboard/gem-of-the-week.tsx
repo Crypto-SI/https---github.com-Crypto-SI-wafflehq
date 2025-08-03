@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PlusCircle } from 'lucide-react';
 import type { Gem } from '@/types';
+import { cn } from '@/lib/utils';
 
 const initialGems: Gem[] = [
     { id: 'gem_1', name: 'WaffleCoin', coingeckoId: 'wafflecoin', currentValue: 214.00, valueWhenAdded: 186.00, valueWhenSold: null },
@@ -45,6 +46,11 @@ export function GemOfTheWeek() {
     setNewGem({ name: '', coingeckoId: '', currentValue: '', valueWhenAdded: '', valueWhenSold: '' });
   };
 
+  const calculateChange = (current: number, added: number) => {
+    if (added === 0) return 0;
+    return ((current - added) / added) * 100;
+  };
+
   return (
     <>
       <Card>
@@ -65,21 +71,31 @@ export function GemOfTheWeek() {
                 <TableHead>Name</TableHead>
                 <TableHead>Current Value</TableHead>
                 <TableHead className="hidden sm:table-cell">Added At</TableHead>
+                <TableHead>Change</TableHead>
                 <TableHead className="hidden sm:table-cell">Sold At</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {gems.map((gem) => (
-                <TableRow key={gem.id}>
-                  <TableCell>
-                    <div className="font-medium">{gem.name}</div>
-                    <div className="text-sm text-muted-foreground">{gem.coingeckoId}</div>
-                  </TableCell>
-                  <TableCell>${gem.currentValue.toFixed(2)}</TableCell>
-                  <TableCell className="hidden sm:table-cell">${gem.valueWhenAdded.toFixed(2)}</TableCell>
-                  <TableCell className="hidden sm:table-cell">{gem.valueWhenSold ? `$${gem.valueWhenSold.toFixed(2)}` : '-'}</TableCell>
-                </TableRow>
-              ))}
+              {gems.map((gem) => {
+                const change = calculateChange(gem.currentValue, gem.valueWhenAdded);
+                return (
+                    <TableRow key={gem.id}>
+                        <TableCell>
+                            <div className="font-medium">{gem.name}</div>
+                            <div className="text-sm text-muted-foreground">{gem.coingeckoId}</div>
+                        </TableCell>
+                        <TableCell>${gem.currentValue.toFixed(2)}</TableCell>
+                        <TableCell className="hidden sm:table-cell">${gem.valueWhenAdded.toFixed(2)}</TableCell>
+                        <TableCell className={cn(
+                            'font-medium',
+                            change > 0 ? 'text-green-500' : 'text-red-500'
+                        )}>
+                            {change.toFixed(2)}%
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">{gem.valueWhenSold ? `$${gem.valueWhenSold.toFixed(2)}` : '-'}</TableCell>
+                    </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </CardContent>
