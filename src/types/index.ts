@@ -21,4 +21,5 @@ export type Gem = {
     currentValue: number;
     valueWhenAdded: number;
     valueWhenSold: number | null;
+    addedBy: 'CryptoSI' | 'Financial Navigator';
 };

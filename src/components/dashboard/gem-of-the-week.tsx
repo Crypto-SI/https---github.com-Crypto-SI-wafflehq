@@ -11,9 +11,11 @@ import { Label } from '@/components/ui/label';
 import { PlusCircle } from 'lucide-react';
 import type { Gem } from '@/types';
 import { cn } from '@/lib/utils';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const initialGems: Gem[] = [
-    { id: 'gem_1', name: 'WaffleCoin', coingeckoId: 'wafflecoin', currentValue: 214.00, valueWhenAdded: 186.00, valueWhenSold: null },
+    { id: 'gem_1', name: 'WaffleCoin', coingeckoId: 'wafflecoin', currentValue: 214.00, valueWhenAdded: 186.00, valueWhenSold: null, addedBy: 'CryptoSI' },
 ];
 
 export function GemOfTheWeek() {
@@ -25,11 +27,16 @@ export function GemOfTheWeek() {
       currentValue: '',
       valueWhenAdded: '',
       valueWhenSold: '',
+      addedBy: 'CryptoSI' as 'CryptoSI' | 'Financial Navigator',
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewGem(prev => ({...prev, [name]: value}));
+  };
+
+  const handleSelectChange = (value: 'CryptoSI' | 'Financial Navigator') => {
+    setNewGem(prev => ({ ...prev, addedBy: value }));
   };
 
   const handleAddGem = () => {
@@ -40,10 +47,11 @@ export function GemOfTheWeek() {
         currentValue: parseFloat(newGem.currentValue) || 0,
         valueWhenAdded: parseFloat(newGem.valueWhenAdded) || 0,
         valueWhenSold: newGem.valueWhenSold ? parseFloat(newGem.valueWhenSold) : null,
+        addedBy: newGem.addedBy,
     };
     setGems(prev => [...prev, gemToAdd]);
     setIsAddGemOpen(false);
-    setNewGem({ name: '', coingeckoId: '', currentValue: '', valueWhenAdded: '', valueWhenSold: '' });
+    setNewGem({ name: '', coingeckoId: '', currentValue: '', valueWhenAdded: '', valueWhenSold: '', addedBy: 'CryptoSI' });
   };
 
   const calculateChange = (current: number, added: number) => {
@@ -68,6 +76,7 @@ export function GemOfTheWeek() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-[180px]">Added By</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Current Value</TableHead>
                 <TableHead className="hidden sm:table-cell">Added At</TableHead>
@@ -80,6 +89,15 @@ export function GemOfTheWeek() {
                 const change = calculateChange(gem.currentValue, gem.valueWhenAdded);
                 return (
                     <TableRow key={gem.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Avatar className="w-8 h-8">
+                              <AvatarImage src={`https://placehold.co/40x40.png`} data-ai-hint="person avatar" />
+                              <AvatarFallback>{gem.addedBy.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <span className="font-medium">{gem.addedBy}</span>
+                          </div>
+                        </TableCell>
                         <TableCell>
                             <div className="font-medium">{gem.name}</div>
                             <div className="text-sm text-muted-foreground">{gem.coingeckoId}</div>
@@ -118,6 +136,18 @@ export function GemOfTheWeek() {
                       <Input id="coingeckoId" name="coingeckoId" value={newGem.coingeckoId} onChange={handleInputChange} placeholder="e.g., wafflecoin" />
                       <Button>Fetch</Button>
                     </div>
+                </div>
+                <div className="grid gap-2">
+                    <Label htmlFor="addedBy">Added By</Label>
+                    <Select onValueChange={handleSelectChange} defaultValue={newGem.addedBy}>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select author" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="CryptoSI">CryptoSI</SelectItem>
+                            <SelectItem value="Financial Navigator">Financial Navigator</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
                 <div className="grid gap-2">
                     <Label htmlFor="currentValue">Current Value ($)</Label>
