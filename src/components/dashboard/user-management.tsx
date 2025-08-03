@@ -20,7 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { MoreHorizontal, PlusCircle, User as UserIcon, Mail, ShieldAlert, XCircle } from 'lucide-react';
+import { MoreHorizontal, PlusCircle, User as UserIcon, Mail, ShieldAlert, XCircle, Pencil } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -32,7 +32,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-const users: User[] = [
+const initialUsers: User[] = [
   {
     id: 'usr_1',
     name: 'Satoshi Nakamoto',
@@ -89,13 +89,34 @@ const getStatusBadge = (status: User['status']) => {
 };
 
 export function UserManagement() {
+  const [users, setUsers] = useState<User[]>(initialUsers);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isUserDetailsOpen, setIsUserDetailsOpen] = useState(false);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [isEditCreditsOpen, setIsEditCreditsOpen] = useState(false);
+  const [creditsToEdit, setCreditsToEdit] = useState<number | string>('');
+
 
   const handleViewDetails = (user: User) => {
     setSelectedUser(user);
     setIsUserDetailsOpen(true);
+  };
+
+  const handleOpenEditCredits = (user: User) => {
+    setSelectedUser(user);
+    setCreditsToEdit(user.credits);
+    setIsEditCreditsOpen(true);
+  };
+  
+  const handleSaveCredits = () => {
+    if (selectedUser) {
+      const newCredits = typeof creditsToEdit === 'string' ? parseInt(creditsToEdit, 10) : creditsToEdit;
+      if (!isNaN(newCredits)) {
+        setUsers(users.map(u => u.id === selectedUser.id ? {...u, credits: newCredits} : u));
+      }
+      setIsEditCreditsOpen(false);
+      setSelectedUser(null);
+    }
   };
 
   return (
@@ -151,6 +172,10 @@ export function UserManagement() {
                         <DropdownMenuItem onClick={() => handleViewDetails(user)}>
                           <UserIcon className="mr-2 h-4 w-4" />
                           View Details
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleOpenEditCredits(user)}>
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Edit Credits
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Mail className="mr-2 h-4 w-4" />
@@ -250,6 +275,25 @@ export function UserManagement() {
             <DialogFooter>
                 <Button variant="outline" onClick={() => setIsInviteOpen(false)}>Cancel</Button>
                 <Button onClick={() => { console.log('Invite sent'); setIsInviteOpen(false); }}>Send Invite</Button>
+            </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isEditCreditsOpen} onOpenChange={setIsEditCreditsOpen}>
+        <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+                <DialogTitle>Edit Credits for {selectedUser?.name}</DialogTitle>
+                <DialogDescription>Update the credit balance for this user.</DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                    <Label htmlFor="credits">Credits</Label>
+                    <Input id="credits" type="number" value={creditsToEdit} onChange={(e) => setCreditsToEdit(e.target.value)} />
+                </div>
+            </div>
+            <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditCreditsOpen(false)}>Cancel</Button>
+                <Button onClick={handleSaveCredits}>Save</Button>
             </DialogFooter>
         </DialogContent>
       </Dialog>
