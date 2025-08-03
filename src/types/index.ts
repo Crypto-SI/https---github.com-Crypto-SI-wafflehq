@@ -3,6 +3,7 @@ export type User = {
     id: string;
     name: string;
     email: string;
+    telegramId?: string;
     status: 'Active' | 'Pending' | 'Banned';
     credits: number;
     creditHistory: CreditRecord[];
@@ -15,7 +16,7 @@ export type CreditRecord = {
 };
 
 export type Gem = {
-    id: string;
+    id:string;
     name: string;
     coingeckoId: string;
     currentValue: number;

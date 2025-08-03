@@ -38,6 +38,7 @@ const initialUsers: User[] = [
     id: 'usr_1',
     name: 'Satoshi Nakamoto',
     email: 'satoshi@gmx.com',
+    telegramId: '@satoshi',
     status: 'Active',
     credits: 1000,
     creditHistory: [
@@ -50,6 +51,7 @@ const initialUsers: User[] = [
     id: 'usr_2',
     name: 'Vitalik Buterin',
     email: 'vitalik@ethereum.org',
+    telegramId: '@vbuterin',
     status: 'Active',
     credits: 500,
     creditHistory: [
@@ -60,6 +62,7 @@ const initialUsers: User[] = [
     id: 'usr_3',
     name: 'Elon Musk',
     email: 'elon@x.com',
+    telegramId: '@elon',
     status: 'Pending',
     credits: 0,
     creditHistory: [],
@@ -68,6 +71,7 @@ const initialUsers: User[] = [
     id: 'usr_4',
     name: 'Do Kwon',
     email: 'do@terra.money',
+    telegramId: '@stablekwon',
     status: 'Banned',
     credits: -100,
     creditHistory: [
@@ -127,7 +131,8 @@ export function UserManagement() {
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.telegramId?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -162,6 +167,7 @@ export function UserManagement() {
             <TableHeader>
               <TableRow>
                 <TableHead>User</TableHead>
+                <TableHead className="hidden sm:table-cell">Telegram ID</TableHead>
                 <TableHead className="hidden sm:table-cell">Status</TableHead>
                 <TableHead>Credits</TableHead>
                 <TableHead>
@@ -184,6 +190,7 @@ export function UserManagement() {
                       </div>
                     </div>
                   </TableCell>
+                  <TableCell className="hidden sm:table-cell">{user.telegramId || '-'}</TableCell>
                   <TableCell className="hidden sm:table-cell">{getStatusBadge(user.status)}</TableCell>
                   <TableCell>{user.credits}</TableCell>
                   <TableCell>
@@ -242,6 +249,7 @@ export function UserManagement() {
                   <div>
                     <div className="text-xl font-bold">{selectedUser.name}</div>
                     <div className="text-sm text-muted-foreground">{selectedUser.email}</div>
+                    <div className="text-sm text-muted-foreground">{selectedUser.telegramId}</div>
                     <div className="mt-1">{getStatusBadge(selectedUser.status)}</div>
                   </div>
                 </div>
