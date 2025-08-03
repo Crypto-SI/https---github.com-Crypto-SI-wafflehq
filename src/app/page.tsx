@@ -2,7 +2,6 @@ import { CryptoWaffleLogo } from '@/components/dashboard/header';
 import { MetricsDashboard } from '@/components/dashboard/metrics-dashboard';
 import { UserManagement } from '@/components/dashboard/user-management';
 import { GemOfTheWeek } from '@/components/dashboard/gem-of-the-week';
-import { WelcomeAi } from '@/components/dashboard/welcome-ai';
 
 export default function Home() {
   return (
@@ -18,7 +17,6 @@ export default function Home() {
           </div>
           <aside className="space-y-8 xl:col-span-1">
             <GemOfTheWeek />
-            <WelcomeAi />
           </aside>
         </div>
       </main>
